@@ -6,16 +6,16 @@
     #kakaoWrap.lint_type1
       //-- position:relative 적용 / 레이아웃 관련 클래스 적용
       #kakaoHead.k_head(role="banner")
-        h1.tit_cont dk stylelint
-        p.emph_desc CSS Convention &amp; HTML Attribute 우선순위 검사기 - &alpha;0.0.8
+        h1.tit_cont Mongmung stylelint
+        p.emph_desc CSS Convention &amp; HTML Attribute 우선순위 검사기
+        span.badge_head 0.1 &beta;
       hr.hide/
       #kakaoContent.k_main(role="main")
         #cMain
           #mArticle.box_article
-            h2#kakaoBody.screen_out dk stylelint 본문
+            h2#kakaoBody.screen_out Mongmung stylelint 본문
             .ico_loader(v-show="isLoading")
             h3.screen_out 입력
-            .noti_info 주의. 현재 rules 설정이 실제 컨벤션과 다를 수 있습니다. 제보 : @gio.a
             .wrap_menu
               .opt_custom(ref="optLang")
                 strong.screen_out 언어 선택상자
@@ -57,8 +57,11 @@
       hr.hide/
       #kakaoFoot.k_foot(role="contentinfo")
         small.info_copy
-          | &commat;dk stylelint project &vert; base on
+          |
+          a(href="https://github.com/bearholmes/mongmung_csslint_fe" target="_blank") &commat;Mongmung stylelint project
+          | &nbsp;&vert; base on &nbsp;
           a(href="https://github.com/stylelint/stylelint" target="_blank") Stylelint
+          | &nbsp;since.2019
 </template>
 <script>
 import axios from 'axios';
@@ -388,8 +391,8 @@ export default {
 </script>
 <style scoped>
 @import url('Top.css');
-
 @import url('~diff2html/dist/diff2html.min.css');
+.badge_head {display:block;position:absolute;top:25px;left:275px;padding:2px 3px;border-radius:2px;font-size:12px;line-height:12px;color:#333;background-color:#ffef3f}
 </style>
 <style>
 .d2h-file-wrapper{padding-bottom:2px}

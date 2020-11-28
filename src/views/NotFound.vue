@@ -1,7 +1,7 @@
 <template lang="pug">
   div.wrap_cont
     h1.title 404
-    p 왜 오류가 났을까요?? <br>제보: @gio.a
+    p 왜 오류가 났을까요??
     p.wrap_btn
       a(href="/") Back
 </template>
