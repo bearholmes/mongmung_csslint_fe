@@ -10,10 +10,17 @@
  * NotFound 화면
  */
 export default {
-  name: 'NotFound'
+  name: 'NotFound',
 };
 </script>
 <style scoped>
-.wrap_cont{min-width:1024px;max-width:1024px;margin:0 auto;padding:30px}
-.wrap_btn{margin-top:30px}
+.wrap_cont {
+  min-width: 1024px;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 30px;
+}
+.wrap_btn {
+  margin-top: 30px;
+}
 </style>

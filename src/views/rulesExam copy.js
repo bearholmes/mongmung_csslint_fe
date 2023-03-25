@@ -5,189 +5,207 @@ const rules = [
     name: 'at-rule-name-case',
     desc: '이름 작성시 대소문자 제한',
     opt: ['lower', 'upper'],
-    default: 'lower'
+    default: 'lower',
   },
   {
     name: 'at-rule-semicolon-newline-after',
     desc: '세미콜론 뒤 새로운 라인 여부',
     opt: ['always'],
-    default: 'always'
+    default: 'always',
   },
   {
     name: 'block-closing-brace-newline-after',
     desc: '블럭 닫힘(}) 뒤 새 라인 여부',
-    opt: ['always', 'always-single-line', 'never-single-line', 'always-multi-line', 'never-multi-line'],
-    default: 'always'
+    opt: [
+      'always',
+      'always-single-line',
+      'never-single-line',
+      'always-multi-line',
+      'never-multi-line',
+    ],
+    default: 'always',
   },
   {
     name: 'block-no-empty',
     desc: '빈 블럭 허용 안함',
     opt: [true],
-    default: true
+    default: true,
   },
   {
     name: 'block-opening-brace-space-after',
     desc: '블럭 열림({) 뒤 공백 여부',
-    opt: ['always', 'always-single-line', 'never-single-line', 'always-multi-line', 'never-multi-line'],
-    default: 'never-single-line'
+    opt: [
+      'always',
+      'always-single-line',
+      'never-single-line',
+      'always-multi-line',
+      'never-multi-line',
+    ],
+    default: 'never-single-line',
   },
   {
     name: 'block-opening-brace-space-before',
     desc: '블럭 열림({) 앞 공백 여부',
-    opt: ['always', 'always-single-line', 'never-single-line', 'always-multi-line', 'never-multi-line'],
-    default: 'never-single-line'
+    opt: [
+      'always',
+      'always-single-line',
+      'never-single-line',
+      'always-multi-line',
+      'never-multi-line',
+    ],
+    default: 'never-single-line',
   },
   {
     name: 'color-hex-case',
     desc: '16진수 색상 표기시 대소문자 제한',
     opt: ['lower', 'upper'],
-    default: 'lower'
+    default: 'lower',
   },
   {
     name: 'color-hex-length',
     desc: '16진수 색상 값 단축 표기법 여부',
     opt: ['short', 'long'],
-    default: 'short'
+    default: 'short',
   },
   {
     name: 'color-named',
     desc: '색상 키워드 제한 여부',
     opt: ['always-where-possible', 'never'],
-    default: 'never'
+    default: 'never',
   },
   {
     name: 'color-no-invalid-hex',
     desc: '잘못된 16진수 색상 허용 안함',
     opt: [true],
-    default: true
+    default: true,
   },
   {
     name: 'comment-no-empty',
     desc: '빈 주석 허용 안함',
     opt: [true],
-    default: true
+    default: true,
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
+    default: '',
   },
   {
     name: '',
     desc: '',
     opt: [''],
-    default: ''
-  }
-]
+    default: '',
+  },
+];
 
 /*
   'rules': {

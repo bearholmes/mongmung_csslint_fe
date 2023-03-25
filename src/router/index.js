@@ -9,17 +9,19 @@ const routes = [
   {
     path: '/',
     name: 'top',
-    component: Top
+    component: Top,
   },
   {
-    path: '*', template: '', component: NotFound
-  }
+    path: '*',
+    template: '',
+    component: NotFound,
+  },
 ];
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
-  routes
+  base: import.meta.env.BASE_URL,
+  routes,
 });
 
 export default router;

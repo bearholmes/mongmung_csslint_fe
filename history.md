@@ -8,7 +8,7 @@ top:
     <option value="less">Less</option>
     <option value="html">HTML+CSS</option>
     <option value="markdown">Markdown</option>
-</select> 
+</select>
 ```
 
 ```

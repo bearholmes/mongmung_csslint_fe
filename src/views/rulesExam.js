@@ -1,6 +1,6 @@
 /* eslint-disable */
 const rules = {
-  'rules': {
+  rules: {
     'at-rule-blacklist': string | [],
     'at-rule-empty-line-before': 'always' | 'never',
     'at-rule-name-case': 'lower' | 'upper',
@@ -13,15 +13,48 @@ const rules = {
     'at-rule-semicolon-space-before': 'always' | 'never',
     'at-rule-whitelist': string | [],
     'block-closing-brace-empty-line-before': 'always-multi-line' | 'never',
-    'block-closing-brace-newline-after': 'always' | 'always-single-line' | 'never-single-line' | 'always-multi-line' | 'never-multi-line',
-    'block-closing-brace-newline-before': 'always' | 'always-multi-line' | 'never-multi-line',
-    'block-closing-brace-space-after': 'always' | 'always-single-line' | 'never-single-line' | 'always-multi-line' | 'never-multi-line',
-    'block-closing-brace-space-before': 'always' | 'never' | 'always-single-line' | 'never-single-line' | 'always-multi-line' | 'never-multi-line',
+    'block-closing-brace-newline-after':
+      'always' |
+      'always-single-line' |
+      'never-single-line' |
+      'always-multi-line' |
+      'never-multi-line',
+    'block-closing-brace-newline-before':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'block-closing-brace-space-after':
+      'always' |
+      'always-single-line' |
+      'never-single-line' |
+      'always-multi-line' |
+      'never-multi-line',
+    'block-closing-brace-space-before':
+      'always' |
+      'never' |
+      'always-single-line' |
+      'never-single-line' |
+      'always-multi-line' |
+      'never-multi-line',
     'block-no-empty': true,
-    'block-opening-brace-newline-after': 'always' | 'always-multi-line' | 'never-multi-line',
-    'block-opening-brace-newline-before': 'always' | 'always-single-line' | 'never-single-line' | 'always-multi-line' | 'never-multi-line',
-    'block-opening-brace-space-after': 'always' | 'always-single-line' | 'never-single-line' | 'always-multi-line' | 'never-multi-line',
-    'block-opening-brace-space-before': 'always' | 'always-single-line' | 'never-single-line' | 'always-multi-line' | 'never-multi-line',
+    'block-opening-brace-newline-after':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'block-opening-brace-newline-before':
+      'always' |
+      'always-single-line' |
+      'never-single-line' |
+      'always-multi-line' |
+      'never-multi-line',
+    'block-opening-brace-space-after':
+      'always' |
+      'always-single-line' |
+      'never-single-line' |
+      'always-multi-line' |
+      'never-multi-line',
+    'block-opening-brace-space-before':
+      'always' |
+      'always-single-line' |
+      'never-single-line' |
+      'always-multi-line' |
+      'never-multi-line',
     'color-hex-case': 'lower' | 'upper',
     'color-hex-length': 'short' | 'long',
     'color-named': 'always-where-possible' | 'never',
@@ -39,10 +72,14 @@ const rules = {
     'declaration-block-no-duplicate-properties': true,
     'declaration-block-no-redundant-longhand-properties': true,
     'declaration-block-no-shorthand-property-overrides': true,
-    'declaration-block-semicolon-newline-after': 'always' | 'always-multi-line' | 'never-multi-line',
-    'declaration-block-semicolon-newline-before': 'always' | 'always-multi-line' | 'never-multi-line',
-    'declaration-block-semicolon-space-after': 'always' | 'never' | 'always-single-line' | 'never-single-line',
-    'declaration-block-semicolon-space-before': 'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'declaration-block-semicolon-newline-after':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'declaration-block-semicolon-newline-before':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'declaration-block-semicolon-space-after':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'declaration-block-semicolon-space-before':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
     'declaration-block-single-line-max-declarations': int,
     'declaration-block-trailing-semicolon': 'always' | 'never',
     'declaration-colon-newline-after': 'always' | 'always-multi-line',
@@ -54,33 +91,42 @@ const rules = {
     'declaration-property-unit-whitelist': {},
     'declaration-property-value-blacklist': {},
     'declaration-property-value-whitelist': {},
-    'font-family-name-quotes': 'always-where-required' | 'always-where-recommended' | 'always-unless-keyword',
+    'font-family-name-quotes':
+      'always-where-required' |
+      'always-where-recommended' |
+      'always-unless-keyword',
     'font-family-no-duplicate-names': true,
     'font-family-no-missing-generic-family-keyword': true,
     'font-weight-notation': 'numeric' | 'named',
     'function-blacklist': string | [],
     'function-calc-no-invalid': true,
     'function-calc-no-unspaced-operator': true,
-    'function-comma-newline-after': 'always' | 'always-multi-line' | 'never-multi-line',
-    'function-comma-newline-before': 'always' | 'always-multi-line' | 'never-multi-line',
-    'function-comma-space-after': 'always' | 'never' | 'always-single-line' | 'never-single-line',
-    'function-comma-space-before': 'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'function-comma-newline-after':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'function-comma-newline-before':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'function-comma-space-after':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'function-comma-space-before':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
     'function-linear-gradient-no-nonstandard-direction': true,
     'function-max-empty-lines': int,
     'function-name-case': 'lower' | 'upper',
-    'function-parentheses-newline-inside': 'always' | 'always-multi-line' | 'never-multi-line',
-    'function-parentheses-space-inside': 'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'function-parentheses-newline-inside':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'function-parentheses-space-inside':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
     'function-url-no-scheme-relative': true,
     'function-url-quotes': 'always' | 'never',
     'function-url-scheme-blacklist': string | [],
     'function-url-scheme-whitelist': string | [],
     'function-whitelist': string | [],
     'function-whitespace-after': 'always' | 'never',
-    'indentation': int | 'tab',
+    indentation: int | 'tab',
     'keyframe-declaration-no-important': true,
     'keyframes-name-pattern': string,
     'length-zero-no-unit': true,
-    'linebreaks': 'unix' | 'windows',
+    linebreaks: 'unix' | 'windows',
     'max-empty-lines': int,
     'max-line-length': int,
     'max-nesting-depth': int,
@@ -95,10 +141,14 @@ const rules = {
     'media-feature-parentheses-space-inside': 'always' | 'never',
     'media-feature-range-operator-space-after': 'always' | 'never',
     'media-feature-range-operator-space-before': 'always' | 'never',
-    'media-query-list-comma-newline-after': 'always' | 'always-multi-line' | 'never-multi-line',
-    'media-query-list-comma-newline-before': 'always' | 'always-multi-line' | 'never-multi-line',
-    'media-query-list-comma-space-after': 'always' | 'never' | 'always-single-line' | 'never-single-line',
-    'media-query-list-comma-space-before': 'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'media-query-list-comma-newline-after':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'media-query-list-comma-newline-before':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'media-query-list-comma-space-after':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'media-query-list-comma-space-before':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
     'no-descending-specificity': true,
     'no-duplicate-at-import-rules': true,
     'no-duplicate-selectors': true,
@@ -117,7 +167,8 @@ const rules = {
     'property-no-unknown': true,
     'property-no-vendor-prefix': true,
     'property-whitelist': string | [],
-    'rule-empty-line-before': 'always' | 'never' | 'always-multi-line' | 'never-multi-line',
+    'rule-empty-line-before':
+      'always' | 'never' | 'always-multi-line' | 'never-multi-line',
     'selector-attribute-brackets-space-inside': 'always' | 'never',
     'selector-attribute-operator-blacklist': string | [],
     'selector-attribute-operator-space-after': 'always' | 'never',
@@ -131,10 +182,14 @@ const rules = {
     'selector-combinator-whitelist': string | [],
     'selector-descendant-combinator-no-non-space': true,
     'selector-id-pattern': string,
-    'selector-list-comma-newline-after': 'always' | 'always-multi-line' | 'never-multi-line',
-    'selector-list-comma-newline-before': 'always' | 'always-multi-line' | 'never-multi-line',
-    'selector-list-comma-space-after': 'always' | 'never' | 'always-single-line' | 'never-single-line',
-    'selector-list-comma-space-before': 'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'selector-list-comma-newline-after':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'selector-list-comma-newline-before':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'selector-list-comma-space-after':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'selector-list-comma-space-before':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
     'selector-max-attribute': int,
     'selector-max-class': int,
     'selector-max-combinators': int,
@@ -170,11 +225,15 @@ const rules = {
     'unit-no-unknown': true,
     'unit-whitelist': string | [],
     'value-keyword-case': 'lower' | 'upper',
-    'value-list-comma-newline-after': 'always' | 'always-multi-line' | 'never-multi-line',
-    'value-list-comma-newline-before': 'always' | 'always-multi-line' | 'never-multi-line',
-    'value-list-comma-space-after': 'always' | 'never' | 'always-single-line' | 'never-single-line',
-    'value-list-comma-space-before': 'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'value-list-comma-newline-after':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'value-list-comma-newline-before':
+      'always' | 'always-multi-line' | 'never-multi-line',
+    'value-list-comma-space-after':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
+    'value-list-comma-space-before':
+      'always' | 'never' | 'always-single-line' | 'never-single-line',
     'value-list-max-empty-lines': int,
-    'value-no-vendor-prefix': true
-  }
+    'value-no-vendor-prefix': true,
+  },
 };

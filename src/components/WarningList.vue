@@ -17,24 +17,43 @@ export default {
      * 목록
      */
     list: {
-      type: Array
+      type: Array,
     },
     /**
      * diff 포함 여부
      */
     diff: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   components: {
-    WarningListItem
-  }
+    WarningListItem,
+  },
 };
 </script>
 <style lang="scss" scoped>
-.success{margin:10px 8px;font-family:initial;font-size:18px;color:#008000}
-.caution{margin:10px 8px;font-family:initial;font-size:18px;color:#ff8a65}
-.warning{margin:10px 8px;font-family:initial;font-size:14px;color:#e74c3c}
-.lst_result{margin-top:2px;font-family:Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace}
+.success {
+  margin: 10px 8px;
+  font-family: initial;
+  font-size: 18px;
+  color: #008000;
+}
+.caution {
+  margin: 10px 8px;
+  font-family: initial;
+  font-size: 18px;
+  color: #ff8a65;
+}
+.warning {
+  margin: 10px 8px;
+  font-family: initial;
+  font-size: 14px;
+  color: #e74c3c;
+}
+.lst_result {
+  margin-top: 2px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro,
+    monospace;
+}
 </style>

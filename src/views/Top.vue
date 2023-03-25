@@ -1,19 +1,19 @@
 <template lang="pug">
   div
-    #kakaoIndex
+    #MongmungIndex
       //-- 웹접근성용 바로가기 링크 모음
-      a(href="#kakaoBody") 본문 바로가기
-    #kakaoWrap.lint_type1
+      a(href="#MongmungBody") 본문 바로가기
+    #MongmungWrap.lint_type1
       //-- position:relative 적용 / 레이아웃 관련 클래스 적용
-      #kakaoHead.k_head(role="banner")
+      #MongmungHead.k_head(role="banner")
         h1.tit_cont Mongmung stylelint
         p.emph_desc CSS Convention &amp; HTML Attribute 우선순위 검사기
-        span.badge_head 0.1 &beta;
+        span.badge_head 0.2 &beta;
       hr.hide/
-      #kakaoContent.k_main(role="main")
+      #MongmungContent.k_main(role="main")
         #cMain
           #mArticle.box_article
-            h2#kakaoBody.screen_out Mongmung stylelint 본문
+            h2#MongmungBody.screen_out Mongmung stylelint 본문
             .ico_loader(v-show="isLoading")
             h3.screen_out 입력
             .wrap_menu
@@ -36,7 +36,7 @@
               button.btn_type1(type="button" @click="lint()" :disabled="code === '' || isLoading") Lint
               button.btn_type2(type="button" @click="clear()" :disabled="isLoading") Clear
               button.btn_type2(type="button" @click="sample()" :disabled="isLoading") Sample
-            #result.section_result(v-show="!isFrist")
+            #result.section_result(v-show="!isFirst")
               h3.tit_paragraph Result
               h4.screen_out 문법 오류
               warning-list(:list.sync="result.warnings" :diff="result.diff.length === 0")
@@ -49,13 +49,13 @@
                     span.screen_out {{isCopy ? '닫기' : '열기'}}
                 .tf_custom(v-show="isCopy")
                   textarea.tf_textarea(v-text="afterCode")
-            .nav_flow(v-show="!isFrist")
+            .nav_flow(v-show="!isFirst")
               strong.screen_out 퀵 메뉴
-              button.btn_type2(type="button" @click="goto('#kakaoBody')") TOP
+              button.btn_type2(type="button" @click="goto('#MongmungBody')") TOP
               button.btn_type2(type="button" @click="goto('#result')") Result
               button.btn_type2(type="button" @click="goto('#diff')") Diff
       hr.hide/
-      #kakaoFoot.k_foot(role="contentinfo")
+      #MongmungFoot.k_foot(role="contentinfo")
         small.info_copy
           |
           a(href="https://github.com/bearholmes/mongmung_csslint_fe" target="_blank") &commat;Mongmung stylelint project
@@ -64,16 +64,16 @@
           | &nbsp;since.2019
 </template>
 <script>
-import axios from 'axios';
-import WarningList from '../components/WarningList';
-import recommendedConfig from 'stylelint-config-recommended';
-import scssRecommendedConfig from 'stylelint-config-recommended-scss';
-import standardConfig from 'stylelint-config-standard';
-import { scroller } from 'vue-scrollto/src/scrollTo';
-import { Fragment } from 'vue-fragment';
+import axios from "axios";
+import WarningList from "../components/WarningList.vue";
+import recommendedConfig from "stylelint-config-recommended";
+import scssRecommendedConfig from "stylelint-config-recommended-scss";
+import standardConfig from "stylelint-config-standard";
+import { scroller } from "vue-scrollto/src/scrollTo";
+import { Fragment } from "vue-fragment";
 
 const defaultConfig = {
-  rules: Object.assign(recommendedConfig.rules, standardConfig.rules)
+  rules: Object.assign(recommendedConfig.rules, standardConfig.rules),
 };
 const navScroller = scroller();
 const sampleCode = `<style>
@@ -110,9 +110,9 @@ const sampleCode = `<style>
 export default {
   name: 'home',
   components: { WarningList, Fragment },
-  data () {
+  data() {
     return {
-      isFrist: true,
+      isFirst: true,
       isLoading: false,
       isCopy: false,
       config: {
@@ -250,9 +250,9 @@ export default {
             'background-origin',
             'background-position',
             'background-repeat',
-            'background-size'
-          ]
-        }
+            'background-size',
+          ],
+        },
       },
       syntax: 'css',
       code: '',
@@ -260,22 +260,22 @@ export default {
       beforeCode: '',
       result: {
         warnings: [],
-        diff: ''
+        diff: '',
       },
       opt: {
-        syntax: 'CSS'
-      }
+        syntax: 'CSS',
+      },
     };
   },
   computed: {
     /**
      * 작성 언어 체크
      * @function
-     * @returns {boolean}
+     * @returns {string}
      */
-    editLang () {
+    editLang() {
       return this.syntax === 'html' ? 'html' : 'css';
-    }
+    },
   },
   // 10/30 diff 코드하이라이트 기능 제거
   // directives: {
@@ -291,40 +291,39 @@ export default {
      * 린트 실행 event
      * @public
      */
-    lint () {
+    lint() {
       this.isLoading = true;
       this.isCopy = false;
       this.result.warnings = [];
       if (this.syntax === 'scss') {
-        const scssRules = Object.assign(
+        this.config.rules = Object.assign(
           defaultConfig.rules,
-          scssRecommendedConfig.rules
+          scssRecommendedConfig.rules,
         );
-        this.config.rules = scssRules;
       }
       const lintConfig = {
         code: this.code,
         config: this.config || defaultConfig,
-        syntax: this.syntax
+        syntax: this.syntax,
       };
       axios
         .post(`/api/lint`, lintConfig, {
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         })
-        .then(response => {
+        .then((response) => {
           this.beforeCode = Object.freeze(this.code);
           this.result.warnings = Object.freeze(response.data.warnings);
           this.result.diff = Object.freeze(response.data.diff);
-          this.isFrist = false;
+          this.isFirst = false;
           this.$nextTick(() => {
             this.goto('#result');
             this.isLoading = false;
             this.afterCode = Object.freeze(response.data.output);
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.isLoading = false;
           alert(err);
           console.log(err);
@@ -334,9 +333,9 @@ export default {
      * 초기화 event
      * @public
      */
-    clear () {
+    clear() {
       this.code = '';
-      this.isFrist = true;
+      this.isFirst = true;
       this.isCopy = false;
       this.result.warnings = [];
       this.beforeCode = '';
@@ -344,14 +343,14 @@ export default {
       this.syntax = 'css';
       this.opt.syntax = 'CSS';
       this.$nextTick(() => {
-        this.goto('#kakaoBody');
+        this.goto('#MongmungBody');
       });
     },
     /**
      * 샘플 입력 event
      * @public
      */
-    sample () {
+    sample() {
       this.isCopy = false;
       this.syntax = 'html';
       this.opt.syntax = 'HTML+CSS';
@@ -362,7 +361,7 @@ export default {
      * @arg {string} target
      * @public
      */
-    optToggle (target) {
+    optToggle(target) {
       this.$refs[target].classList.toggle('on');
     },
     /**
@@ -373,7 +372,7 @@ export default {
      * @param {string} name
      * @public
      */
-    selectOpt (target, model, value, name) {
+    selectOpt(target, model, value, name) {
       this[model] = value;
       this.opt[model] = name;
       this.$refs[target].classList.remove('on');
@@ -383,20 +382,10 @@ export default {
      * @param {string} target \#id
      * @public
      */
-    goto (target) {
+    goto(target) {
       navScroller(target);
-    }
-  }
+    },
+  },
 };
 </script>
-<style scoped>
-@import url('Top.css');
-@import url('~diff2html/dist/diff2html.min.css');
-.badge_head {display:block;position:absolute;top:25px;left:275px;padding:2px 3px;border-radius:2px;font-size:12px;line-height:12px;color:#333;background-color:#ffef3f}
-</style>
-<style>
-.d2h-file-wrapper{padding-bottom:2px}
-.d2h-file-header{height:18px}
-.d2h-changed-tag{padding:0 5px}
-.d2h-diff-table{font-size:11px}
-</style>
+<style></style>
