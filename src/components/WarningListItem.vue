@@ -1,26 +1,24 @@
 <template lang="pug">
-  li.item_result(:id="`${item.line}${item.column}${item.text}`" :class="item.severity")
-    span.txt_location {{item.line}}:{{item.column}}
-    span.emph_severity {{item.severity}}
-    span.txt_message
-      | {{item.text.replace(`(${item.rule})`, '')}}
-      span.txt_rule (
-        a.link_rule(:href="`//stylelint.io/user-guide/rules/${item.rule}/`" target="_blank") {{item.rule}}
-        | )
+li.item_result(:id="`${item.line}${item.column}${item.text}`" :class="item.severity")
+  span.txt_location {{item.line}}:{{item.column}}
+  span.emph_severity {{item.severity}}
+  span.txt_message
+    | {{item.text.replace(`(${item.rule})`, '')}}
+    span.txt_rule (
+      a.link_rule(:href="`//stylelint.io/user-guide/rules/${item.rule}/`" target="_blank") {{item.rule}}
+      | )
 </template>
-<script>
+<script setup>
 /**
  * WarningList 행 컴포넌트 (functional)
  */
-export default {
-  name: 'WarningListItem',
-  props: {
-    item: {
-      type: Object,
-      default: () => ({}),
-    },
+
+defineProps({
+  item: {
+    type: Object,
+    default: () => ({}),
   },
-};
+});
 </script>
 <style lang="scss" scoped>
 .item_result {

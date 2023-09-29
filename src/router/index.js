@@ -1,9 +1,6 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import Top from '../views/Top.vue';
 import NotFound from '../views/NotFound.vue';
-
-Vue.use(VueRouter);
 
 const routes = [
   {
@@ -12,16 +9,17 @@ const routes = [
     component: Top,
   },
   {
-    path: '*',
-    template: '',
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
     component: NotFound,
   },
 ];
 
-const router = new VueRouter({
-  mode: 'history',
-  base: import.meta.env.BASE_URL,
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
+
 
 export default router;

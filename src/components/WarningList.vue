@@ -1,36 +1,30 @@
 <template lang="pug">
-  ul.lst_result
-    li.success(v-if="list.length === 0 && diff") &#9728; ALL PASS :)
-    li.caution(v-if="list.length === 0 && !diff") &#9729; Caution
-    li.warning(v-if="list.length > 0 && !diff") &#9730; Warning ({{list.length}})
-    warning-list-item(v-for="(items, idx) in list" :key="idx" :item="items")/
+ul.lst_result
+  li.success(v-if="list.length === 0 && diff") &#9728; ALL PASS :)
+  li.caution(v-if="list.length === 0 && !diff") &#9729; Caution
+  li.warning(v-if="list.length > 0 && !diff") &#9730; Warning ({{list.length}})
+  warning-list-item(v-for="(items, idx) in list" :key="idx" :item="items")/
 </template>
-<script>
+<script setup>
 import WarningListItem from './WarningListItem.vue';
 /**
  * WarningList 테이블 컴포넌트
  */
-export default {
-  name: 'WarningList',
-  props: {
-    /**
-     * 목록
-     */
-    list: {
-      type: Array,
-    },
-    /**
-     * diff 포함 여부
-     */
-    diff: {
-      type: Boolean,
-      default: false,
-    },
+defineProps({
+  /**
+   * 목록
+   */
+  list: {
+    type: Array,
   },
-  components: {
-    WarningListItem,
+  /**
+   * diff 포함 여부
+   */
+  diff: {
+    type: Boolean,
+    default: false,
   },
-};
+});
 </script>
 <style lang="scss" scoped>
 .success {
