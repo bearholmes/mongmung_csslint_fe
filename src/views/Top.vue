@@ -8,7 +8,7 @@ div
     #MongmungHead.k_head(role="banner")
       h1.tit_cont Mongmung stylelint
       p.emph_desc CSS Convention &amp; HTML Attribute 우선순위 검사기
-      span.badge_head 0.2 &beta;
+      span.badge_head 0.3 &beta;
     hr.hide/
     #MongmungContent.k_main(role="main")
       #cMain
