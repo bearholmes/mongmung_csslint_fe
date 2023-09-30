@@ -56,12 +56,12 @@ div
             button.btn_type2(type="button" @click="goto('#diff')") Diff
     hr.hide/
     #MongmungFoot.k_foot(role="contentinfo")
-      small.info_copy
+      small.info_copy &copy;2019&nbsp;
         |
         a(href="https://github.com/bearholmes/mongmung_csslint_fe" target="_blank") &commat;Mongmung stylelint project
         | &nbsp;&vert; base on &nbsp;
         a(href="https://github.com/stylelint/stylelint" target="_blank") Stylelint
-        | &nbsp;since.2019
+        |
 </template>
 <script setup>
 import { computed, nextTick, reactive, ref } from 'vue';
