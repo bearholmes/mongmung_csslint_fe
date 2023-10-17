@@ -1,9 +1,14 @@
-<template lang="pug">
-ul.lst_result
-  li.success(v-if="list.length === 0 && diff") &#9728; ALL PASS :)
-  li.caution(v-if="list.length === 0 && !diff") &#9729; Caution
-  li.warning(v-if="list.length > 0 && !diff") &#9730; Warning ({{list.length}})
-  warning-list-item(v-for="(items, idx) in list" :key="idx" :item="items")/
+<template>
+  <ul class="lst_result">
+    <li class="success" v-if="list.length === 0 && diff">
+      &#9728; ALL PASS :)
+    </li>
+    <li class="caution" v-if="list.length === 0 && !diff">&#9729; Caution</li>
+    <li class="warning" v-if="list.length > 0 && !diff">
+      &#9730; Warning ({{ list.length }})
+    </li>
+    <warning-list-item v-for="(items, idx) in list" :key="idx" :item="items" />
+  </ul>
 </template>
 <script setup>
 import WarningListItem from './WarningListItem.vue';
