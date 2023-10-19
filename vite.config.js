@@ -16,4 +16,7 @@ export default defineConfig({
     },
     disableHostCheck: true,
   },
+  build: {
+    sourcemap: false,
+  },
 });
