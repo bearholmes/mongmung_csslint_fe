@@ -8,7 +8,7 @@
       >&nbsp;&vert; base on &nbsp;<a
         href="https://github.com/stylelint/stylelint"
         target="_blank"
-        >Stylelint</a
+        >Stylelint v15</a
       ></small
     >
   </div>

@@ -7,5 +7,4 @@ services:
       dockerfile: dockerfile
     container_name: stylelint-fe
     ports:
-      - "5001:8080"
-
+      - '5001:8080'

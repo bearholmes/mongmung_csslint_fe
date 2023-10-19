@@ -8,56 +8,8 @@
         <div id="cMain">
           <div id="mArticle" class="box_article">
             <h2 id="MongmungBody" class="screen_out">본문</h2>
-            <div v-show="status.isLoading" class="ico_loader"></div>
             <h3 class="screen_out">입력</h3>
             <div class="wrap_menu">
-              <div class="opt_custom" ref="refSyntaxOpt">
-                <strong class="screen_out">언어 선택상자</strong>
-                <em class="screen_out">선택내용</em>
-                <a
-                  class="link_selected"
-                  href="javascript:;"
-                  role="button"
-                  @click="optToggle"
-                >
-                  {{ selectedSyntax }}
-                </a>
-                <div class="layer_opt">
-                  <ul class="list_opt">
-                    <li v-for="(item, idx) in options.syntax" :key="idx">
-                      <a
-                        class="link_opt"
-                        href="javascript:;"
-                        role="button"
-                        @click="selectSyntaxOpt(item.value, item.type)"
-                        >{{ item.label }}</a
-                      >
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <button
-                :disabled="status.isLoading"
-                class="btn_type1"
-                type="button"
-                @click="lint()"
-              >
-                Lint
-              </button>
-              <button
-                :disabled="status.isLoading"
-                class="btn_type2"
-                type="button"
-                @click="clear()"
-              >
-                Clear
-              </button>
-            </div>
-            <div class="tf_custom">
-              <!--              <textarea class="tf_textarea" v-model="inputCode"></textarea>-->
-              <div id="inpTextarea" style="height: 100%"></div>
-            </div>
-            <div class="wrap_btn">
               <button
                 :disabled="status.isLoading"
                 class="btn_type1"
@@ -83,6 +35,10 @@
                 Sample
               </button>
             </div>
+            <div class="tf_custom">
+              <div id="inpTextarea" style="height: 100%"></div>
+            </div>
+            <div v-show="status.isLoading" class="ico_loader"></div>
             <div v-show="status.isLoaded" id="result" class="section_result">
               <h3 class="tit_paragraph">Result</h3>
               <h4 class="screen_out">문법 오류</h4>
@@ -97,6 +53,37 @@
                   v-show="!!inputCode"
                   style="height: 100%"
                 ></div>
+              </div>
+              <div class="wrap_btn">
+                <button
+                  type="button"
+                  class="btn_type2"
+                  @click="status.isShowRules = !status.isShowRules"
+                >
+                  Rules
+                  <span class="screen_out">
+                    {{ status.isShowRules ? '접기' : '펼치기' }}
+                  </span>
+                </button>
+              </div>
+              <h4 class="screen_out">규칙</h4>
+              <div
+                v-show="status.isShowRules"
+                style="
+                  margin-top: 10px;
+                  height: 300px;
+                  overflow-y: auto;
+                  border: 1px solid #e7e7e7;
+                  font-size: 11px;
+                "
+              >
+                <pre>{{
+                  {
+                    version: result.version,
+                    ...result.config,
+                    rules: config.rules,
+                  }
+                }}</pre>
               </div>
             </div>
 
@@ -133,9 +120,6 @@ import axios from 'axios';
 import { scroller } from 'vue-scrollto/src/scrollTo';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-bootstrap.css';
-import recommendedConfig from 'stylelint-config-recommended';
-import scssRecommendedConfig from 'stylelint-config-recommended-scss';
-import standardConfig from 'stylelint-config-standard';
 import WarningList from '../components/WarningList.vue';
 import AppFooter from '../components/AppFooter.vue';
 import AppHeader from '../components/AppHeader.vue';
@@ -151,9 +135,6 @@ loader.config({ monaco });
 
 const $toast = useToast();
 
-const defaultConfig = {
-  rules: Object.assign(recommendedConfig.rules, standardConfig.rules),
-};
 const navScroller = scroller();
 const sampleCode = `<style>
 #testColl .tbl_weather .ico_yesterday .bar {color:#e0e0e0 !important;margin:0 1px}
@@ -187,72 +168,18 @@ const sampleCode = `<style>
 const status = reactive({
   isLoaded: false,
   isLoading: false,
+  isShowRules: false,
 });
 
 // 입력값
 const inputCode = ref('');
 
 const config = reactive({
-  plugins: ['stylelint-order'],
-  extends: [],
   rules: {
-    'at-rule-name-case': 'lower',
-    'at-rule-semicolon-newline-after': 'always',
-    'block-closing-brace-newline-after': 'always',
-    'block-no-empty': true,
-    'block-opening-brace-space-after': 'never-single-line',
-    'block-opening-brace-space-before': 'never-single-line',
-    'color-hex-case': 'lower',
-    'color-hex-length': 'short',
     'color-named': 'never',
-    'color-no-invalid-hex': true,
-    'comment-no-empty': true,
-    'comment-whitespace-inside': 'always',
-    'declaration-block-no-duplicate-properties': true,
-    'declaration-block-semicolon-space-after': 'never',
-    'declaration-block-semicolon-space-before': 'never',
-    'declaration-block-trailing-semicolon': 'never',
-    'declaration-colon-space-after': 'never',
-    'declaration-colon-space-before': 'never',
+    'declaration-block-single-line-max-declarations': 99,
     'declaration-no-important': true,
-    'function-comma-space-after': 'never',
-    'function-comma-space-before': 'never',
-    'function-max-empty-lines': 0,
-    'function-name-case': 'lower',
-    'function-parentheses-space-inside': 'never',
-    'function-url-quotes': 'never',
-    // 'no-descending-specificity': [true, {ignore: ['selectors-within-list']}],
-    'no-duplicate-selectors': [true, { disallowInList: false }],
-    'no-eol-whitespace': true,
-    'no-extra-semicolons': true,
-    'no-invalid-double-slash-comments': true,
-    'property-case': 'lower',
-    'property-no-unknown': true,
-    'selector-attribute-brackets-space-inside': 'never',
-    'selector-attribute-operator-space-after': 'never',
-    'selector-attribute-operator-space-before': 'never',
-    'selector-attribute-quotes': 'always',
-    'selector-combinator-space-after': 'never',
-    'selector-combinator-space-before': 'never',
-    'selector-list-comma-space-after': 'never',
-    'selector-list-comma-space-before': 'never',
-    'selector-type-case': 'lower',
-    'selector-pseudo-class-case': 'lower',
-    'selector-pseudo-class-no-unknown': true,
-    'selector-pseudo-class-parentheses-space-inside': 'never',
-    'selector-pseudo-element-case': 'lower',
-    'selector-pseudo-element-colon-notation': 'single',
-    'selector-pseudo-element-no-unknown': true,
-    'string-quotes': 'single',
-    'unit-case': 'lower',
-    'unit-no-unknown': true,
-    'unit-whitelist': ['px', '%', 'dpi', 'dppx', 's', 'deg'],
-    'value-keyword-case': 'lower',
-    'value-list-comma-newline-after': 'never-multi-line',
-    'value-list-comma-newline-before': 'never-multi-line',
-    'value-list-comma-space-after': 'always',
-    'value-list-comma-space-before': 'never',
-    'value-list-max-empty-lines': 0,
+    'declaration-property-value-no-unknown': true,
     'order/properties-order': [
       'display',
       'overflow',
@@ -329,37 +256,15 @@ const config = reactive({
       'background-repeat',
       'background-size',
     ],
+    'selector-class-pattern': false,
+    'selector-id-pattern': false,
   },
 });
 // api 응답 결과
 const result = reactive({
   warnings: [],
-  diff: '',
-});
-// syntax 선택
-const syntax = ref('css');
-// syntax 선택상자 ref
-const refSyntaxOpt = ref(null);
-// 선택상자 options
-const options = reactive({
-  syntax: [
-    {
-      label: 'CSS',
-      value: 'css',
-      type: 'css',
-    },
-    {
-      label: 'HTML+CSS',
-      value: 'html',
-      type: 'html',
-    },
-  ],
-});
-
-// 선택된 syntax label
-const selectedSyntax = computed(() => {
-  const item = options.syntax.find((item) => item.value === syntax.value);
-  return item ? item.label : '';
+  version: '',
+  config: {},
 });
 
 // diff 여부
@@ -386,32 +291,26 @@ async function lint() {
     status.isLoading = true;
     result.warnings = [];
 
-    if (syntax.value === 'scss') {
-      config.rules = Object.assign(
-        defaultConfig.rules,
-        scssRecommendedConfig.rules,
-      );
-    }
-    const lintConfig = {
+    const body = {
       code: inputCode.value,
-      config: config || defaultConfig,
-      syntax: syntax.value,
+      config: config,
     };
-    const response = await axios.post(`/api/lint`, lintConfig, {
+    const response = await axios.post(`/api/lint`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
     //     console.log(response, 'response');
-    if (!response.data.lint) {
+    if (!response.data.content) {
       status.isLoading = false;
       return;
     }
     // 응답값 치환
-    const { warnings = [], diff = '', output = '' } = response.data.lint;
+    const { warnings = [], info = {}, output = '' } = response.data?.content;
     result.warnings = Object.freeze(warnings);
-    result.diff = Object.freeze(diff);
+    result.version = info?.version;
+    result.config = info?.config;
     status.isLoaded = true;
 
     // 기존 코드
@@ -465,12 +364,8 @@ async function lint() {
 async function clear() {
   inputCode.value = '';
   result.warnings = [];
-  syntax.value = 'css';
   if (window.codeEditor) {
     window.codeEditor.setValue('');
-    window.codeEditor.updateOptions({
-      language: 'css',
-    });
   }
   status.isLoaded = false;
   await nextTick();
@@ -482,36 +377,12 @@ async function clear() {
  */
 function sample() {
   inputCode.value = sampleCode;
-  syntax.value = 'html';
+  result.warnings = [];
   if (window.codeEditor) {
     window.codeEditor.setValue(sampleCode);
-    window.codeEditor.updateOptions({
-      language: 'html',
-    });
   }
 }
-/**
- * 디자인선택상자 토글 event
- * @public
- */
-function optToggle() {
-  refSyntaxOpt.value.classList.toggle('on');
-}
-/**
- * 디자인선택상자 값 선택 event
- * @param {string} value
- * @param type
- * @public
- */
-function selectSyntaxOpt(value, type) {
-  syntax.value = value;
-  if (window.codeEditor) {
-    window.codeEditor.updateOptions({
-      language: type,
-    });
-  }
-  refSyntaxOpt.value.classList.remove('on');
-}
+
 /**
  * goto
  * @param {string} target \#id
@@ -529,7 +400,7 @@ onMounted(() => {
         document.getElementById('inpTextarea'),
         {
           value: '',
-          language: 'css',
+          language: 'html',
           // noSemanticValidation: false,
           // noSyntaxValidation: false,
           minimap: {
