@@ -1,80 +1,140 @@
-<template lang="pug">
-  div
-    #MongmungIndex
-      //-- 웹접근성용 바로가기 링크 모음
-      a(href="#MongmungBody") 본문 바로가기
-    #MongmungWrap.lint_type1
-      //-- position:relative 적용 / 레이아웃 관련 클래스 적용
-      #MongmungHead.k_head(role="banner")
-        h1.tit_cont Mongmung stylelint
-        p.emph_desc CSS Convention &amp; HTML Attribute 우선순위 검사기
-        span.badge_head 0.2 &beta;
-      hr.hide/
-      #MongmungContent.k_main(role="main")
-        #cMain
-          #mArticle.box_article
-            h2#MongmungBody.screen_out Mongmung stylelint 본문
-            .ico_loader(v-show="isLoading")
-            h3.screen_out 입력
-            .wrap_menu
-              .opt_custom(ref="optLang")
-                strong.screen_out 언어 선택상자
-                em.screen_out 선택내용
-                a.link_selected(href="javascript:;", @click="optToggle('optLang')", role="button") {{opt.syntax}}
-                .layer_opt
-                  ul.list_opt
-                    li
-                      a.link_opt(href="javascript:;" @click="selectOpt('optLang', 'syntax', 'css', 'CSS')" role="button") CSS
-                    li
-                      a.link_opt(href="javascript:;" @click="selectOpt('optLang', 'syntax', 'html', 'HTML+CSS')" role="button") HTML+CSS
-              button.btn_type1(type="button" @click="lint()" :disabled="code === '' || isLoading") Lint
-              button.btn_type2(type="button" @click="clear()" :disabled='isLoading') Clear
-            .wrap_opt(style="display:none")
-            .tf_custom
-              textarea.tf_textarea(v-model="code")
-            .wrap_btn
-              button.btn_type1(type="button" @click="lint()" :disabled="code === '' || isLoading") Lint
-              button.btn_type2(type="button" @click="clear()" :disabled="isLoading") Clear
-              button.btn_type2(type="button" @click="sample()" :disabled="isLoading") Sample
-            #result.section_result(v-show="!isFirst")
-              h3.tit_paragraph Result
-              h4.screen_out 문법 오류
-              warning-list(:list.sync="result.warnings" :diff="result.diff.length === 0")
-              h4.screen_out 위치
-              #diff.box_diff(v-html="result.diff")
-              template(v-if="result.diff.length > 0")
-                .wrap_btn
-                  button.btn_type1(type="button" @click="isCopy=!isCopy")
-                    | 변환된 코드 전체보기
-                    span.screen_out {{isCopy ? '닫기' : '열기'}}
-                .tf_custom(v-show="isCopy")
-                  textarea.tf_textarea(v-text="afterCode")
-            .nav_flow(v-show="!isFirst")
-              strong.screen_out 퀵 메뉴
-              button.btn_type2(type="button" @click="goto('#MongmungBody')") TOP
-              button.btn_type2(type="button" @click="goto('#result')") Result
-              button.btn_type2(type="button" @click="goto('#diff')") Diff
-      hr.hide/
-      #MongmungFoot.k_foot(role="contentinfo")
-        small.info_copy
-          |
-          a(href="https://github.com/bearholmes/mongmung_csslint_fe" target="_blank") &commat;Mongmung stylelint project
-          | &nbsp;&vert; base on &nbsp;
-          a(href="https://github.com/stylelint/stylelint" target="_blank") Stylelint
-          | &nbsp;since.2019
-</template>
-<script>
-import axios from "axios";
-import WarningList from "../components/WarningList.vue";
-import recommendedConfig from "stylelint-config-recommended";
-import scssRecommendedConfig from "stylelint-config-recommended-scss";
-import standardConfig from "stylelint-config-standard";
-import { scroller } from "vue-scrollto/src/scrollTo";
-import { Fragment } from "vue-fragment";
+<template>
+  <div>
+    <div id="MongmungIndex"><a href="#MongmungBody">본문 바로가기</a></div>
+    <div id="MongmungWrap" class="lint_type1">
+      <app-header />
+      <hr class="hide" />
+      <div id="MongmungContent" class="k_main" role="main">
+        <div id="cMain">
+          <div id="mArticle" class="box_article">
+            <h2 id="MongmungBody" class="screen_out">본문</h2>
+            <h3 class="screen_out">입력</h3>
+            <div class="wrap_menu">
+              <button
+                :disabled="status.isLoading"
+                class="btn_type1"
+                type="button"
+                @click="lint()"
+              >
+                Lint
+              </button>
+              <button
+                :disabled="status.isLoading"
+                class="btn_type2"
+                type="button"
+                @click="clear()"
+              >
+                Clear
+              </button>
+              <button
+                :disabled="status.isLoading"
+                class="btn_type2"
+                type="button"
+                @click="sample()"
+              >
+                Sample
+              </button>
+            </div>
+            <div class="tf_custom">
+              <div id="inpTextarea" style="height: 100%"></div>
+            </div>
+            <div v-show="status.isLoading" class="ico_loader"></div>
+            <div v-show="status.isLoaded" id="result" class="section_result">
+              <h3 class="tit_paragraph">Result</h3>
+              <h4 class="screen_out">문법 오류</h4>
+              <warning-list
+                :list.sync="result.warnings"
+                :diff="hasDiff"
+              ></warning-list>
+              <h4 class="screen_out">위치</h4>
+              <div id="diff" class="box_diff">
+                <div
+                  id="editor"
+                  v-show="!!inputCode"
+                  style="height: 100%"
+                ></div>
+              </div>
+              <div class="wrap_btn">
+                <button
+                  type="button"
+                  class="btn_type2"
+                  @click="status.isShowRules = !status.isShowRules"
+                >
+                  Rules
+                  <span class="screen_out">
+                    {{ status.isShowRules ? '접기' : '펼치기' }}
+                  </span>
+                </button>
+              </div>
+              <h4 class="screen_out">규칙</h4>
+              <div
+                v-show="status.isShowRules"
+                style="
+                  margin-top: 10px;
+                  height: 300px;
+                  overflow-y: auto;
+                  border: 1px solid #e7e7e7;
+                  font-size: 11px;
+                "
+              >
+                <pre>{{
+                  {
+                    version: result.version,
+                    ...result.config,
+                    rules: config.rules,
+                  }
+                }}</pre>
+              </div>
+            </div>
 
-const defaultConfig = {
-  rules: Object.assign(recommendedConfig.rules, standardConfig.rules),
-};
+            <div v-show="status.isLoaded" class="nav_flow">
+              <strong class="screen_out">퀵 메뉴</strong>
+              <button
+                class="btn_type2"
+                type="button"
+                @click="goto('#MongmungBody')"
+              >
+                TOP
+              </button>
+              <button class="btn_type2" type="button" @click="goto('#result')">
+                Result
+              </button>
+              <button class="btn_type2" type="button" @click="goto('#diff')">
+                Diff
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr class="hide" />
+      <app-footer />
+    </div>
+  </div>
+</template>
+<script setup>
+/**
+ * 메인 화면
+ */
+import { computed, nextTick, onMounted, reactive, ref } from 'vue';
+import axios from 'axios';
+import { scroller } from 'vue-scrollto/src/scrollTo';
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-bootstrap.css';
+import WarningList from '../components/WarningList.vue';
+import AppFooter from '../components/AppFooter.vue';
+import AppHeader from '../components/AppHeader.vue';
+
+import loader from '@monaco-editor/loader';
+import * as monaco from 'monaco-editor';
+
+loader.config({ monaco });
+
+// loader.config({
+//   paths: { vs: 'https://unpkg.com/monaco-editor@0.44.0/min/vs' },
+// });
+
+const $toast = useToast();
+
 const navScroller = scroller();
 const sampleCode = `<style>
 #testColl .tbl_weather .ico_yesterday .bar {color:#e0e0e0 !important;margin:0 1px}
@@ -104,288 +164,257 @@ const sampleCode = `<style>
     <span id="weatherCollFavTxt" class="fL">의 날씨정보를 볼 수 있습니다.</span>
 </div>`;
 
+// 상태
+const status = reactive({
+  isLoaded: false,
+  isLoading: false,
+  isShowRules: false,
+});
+
+// 입력값
+const inputCode = ref('');
+
+const config = reactive({
+  rules: {
+    'color-named': 'never',
+    'declaration-block-single-line-max-declarations': 99,
+    'declaration-no-important': true,
+    'declaration-property-value-no-unknown': true,
+    'order/properties-order': [
+      'display',
+      'overflow',
+      'overflow-wrap',
+      'overflow-x',
+      'overflow-y',
+      'float',
+      'position',
+      'top',
+      'right',
+      'bottom',
+      'left',
+      'z-index',
+      'width',
+      'max-width',
+      'min-width',
+      'height',
+      'max-height',
+      'min-height',
+      'margin',
+      'margin-top',
+      'margin-right',
+      'margin-bottom',
+      'margin-left',
+      'padding',
+      'padding-top',
+      'padding-right',
+      'padding-bottom',
+      'padding-left',
+      'border',
+      'border-top',
+      'border-right',
+      'border-bottom',
+      'border-left',
+      'border-width',
+      'border-top-width',
+      'border-right-width',
+      'border-bottom-width',
+      'border-left-width',
+      'border-style',
+      'border-top-style',
+      'border-right-style',
+      'border-bottom-style',
+      'border-left-style',
+      'border-color',
+      'border-top-color',
+      'border-right-color',
+      'border-bottom-color',
+      'border-left-color',
+      'border-radius',
+      'border-top-left-radius',
+      'border-top-right-radius',
+      'border-bottom-right-radius',
+      'border-bottom-left-radius',
+      'box-shadow',
+      'border-spacing',
+      'font',
+      'font-style',
+      'font-variant',
+      'font-weight',
+      'font-stretch',
+      'font-size',
+      'line-height',
+      'font-family',
+      'color',
+      'background',
+      'background-attachment',
+      'background-blend-mode',
+      'background-clip',
+      'background-color',
+      'background-image',
+      'background-origin',
+      'background-position',
+      'background-repeat',
+      'background-size',
+    ],
+    'selector-class-pattern': false,
+    'selector-id-pattern': false,
+  },
+});
+// api 응답 결과
+const result = reactive({
+  warnings: [],
+  version: '',
+  config: {},
+});
+
+// diff 여부
+const hasDiff = computed(() => {
+  return JSON.stringify(result.diff) !== JSON.stringify(inputCode.value);
+});
+
 /**
- * 메인 화면
+ * 린트 실행 event
+ * @public
  */
-export default {
-  name: 'home',
-  components: { WarningList, Fragment },
-  data() {
-    return {
-      isFirst: true,
-      isLoading: false,
-      isCopy: false,
-      config: {
-        plugins: ['stylelint-order'],
-        extends: [],
-        rules: {
-          'at-rule-name-case': 'lower',
-          'at-rule-semicolon-newline-after': 'always',
-          'block-closing-brace-newline-after': 'always',
-          'block-no-empty': true,
-          'block-opening-brace-space-after': 'never-single-line',
-          'block-opening-brace-space-before': 'never-single-line',
-          'color-hex-case': 'lower',
-          'color-hex-length': 'short',
-          'color-named': 'never',
-          'color-no-invalid-hex': true,
-          'comment-no-empty': true,
-          'comment-whitespace-inside': 'always',
-          'declaration-block-no-duplicate-properties': true,
-          'declaration-block-semicolon-space-after': 'never',
-          'declaration-block-semicolon-space-before': 'never',
-          'declaration-block-trailing-semicolon': 'never',
-          'declaration-colon-space-after': 'never',
-          'declaration-colon-space-before': 'never',
-          'declaration-no-important': true,
-          'function-comma-space-after': 'never',
-          'function-comma-space-before': 'never',
-          'function-max-empty-lines': 0,
-          'function-name-case': 'lower',
-          'function-parentheses-space-inside': 'never',
-          'function-url-quotes': 'never',
-          // 'no-descending-specificity': [true, {ignore: ['selectors-within-list']}],
-          'no-duplicate-selectors': [true, { disallowInList: false }],
-          'no-eol-whitespace': true,
-          'no-extra-semicolons': true,
-          'no-invalid-double-slash-comments': true,
-          'property-case': 'lower',
-          'property-no-unknown': true,
-          'selector-attribute-brackets-space-inside': 'never',
-          'selector-attribute-operator-space-after': 'never',
-          'selector-attribute-operator-space-before': 'never',
-          'selector-attribute-quotes': 'always',
-          'selector-combinator-space-after': 'never',
-          'selector-combinator-space-before': 'never',
-          'selector-list-comma-space-after': 'never',
-          'selector-list-comma-space-before': 'never',
-          'selector-type-case': 'lower',
-          'selector-pseudo-class-case': 'lower',
-          'selector-pseudo-class-no-unknown': true,
-          'selector-pseudo-class-parentheses-space-inside': 'never',
-          'selector-pseudo-element-case': 'lower',
-          'selector-pseudo-element-colon-notation': 'single',
-          'selector-pseudo-element-no-unknown': true,
-          'string-quotes': 'single',
-          'unit-case': 'lower',
-          'unit-no-unknown': true,
-          'unit-whitelist': ['px', '%', 'dpi', 'dppx', 's', 'deg'],
-          'value-keyword-case': 'lower',
-          'value-list-comma-newline-after': 'never-multi-line',
-          'value-list-comma-newline-before': 'never-multi-line',
-          'value-list-comma-space-after': 'always',
-          'value-list-comma-space-before': 'never',
-          'value-list-max-empty-lines': 0,
-          'order/properties-order': [
-            'display',
-            'overflow',
-            'overflow-wrap',
-            'overflow-x',
-            'overflow-y',
-            'float',
-            'position',
-            'top',
-            'right',
-            'bottom',
-            'left',
-            'z-index',
-            'width',
-            'max-width',
-            'min-width',
-            'height',
-            'max-height',
-            'min-height',
-            'margin',
-            'margin-top',
-            'margin-right',
-            'margin-bottom',
-            'margin-left',
-            'padding',
-            'padding-top',
-            'padding-right',
-            'padding-bottom',
-            'padding-left',
-            'border',
-            'border-top',
-            'border-right',
-            'border-bottom',
-            'border-left',
-            'border-width',
-            'border-top-width',
-            'border-right-width',
-            'border-bottom-width',
-            'border-left-width',
-            'border-style',
-            'border-top-style',
-            'border-right-style',
-            'border-bottom-style',
-            'border-left-style',
-            'border-color',
-            'border-top-color',
-            'border-right-color',
-            'border-bottom-color',
-            'border-left-color',
-            'border-radius',
-            'border-top-left-radius',
-            'border-top-right-radius',
-            'border-bottom-right-radius',
-            'border-bottom-left-radius',
-            'box-shadow',
-            'border-spacing',
-            'font',
-            'font-style',
-            'font-variant',
-            'font-weight',
-            'font-stretch',
-            'font-size',
-            'line-height',
-            'font-family',
-            'color',
-            'background',
-            'background-attachment',
-            'background-blend-mode',
-            'background-clip',
-            'background-color',
-            'background-image',
-            'background-origin',
-            'background-position',
-            'background-repeat',
-            'background-size',
-          ],
-        },
-      },
-      syntax: 'css',
-      code: '',
-      afterCode: '',
-      beforeCode: '',
-      result: {
-        warnings: [],
-        diff: '',
-      },
-      opt: {
-        syntax: 'CSS',
-      },
-    };
-  },
-  computed: {
-    /**
-     * 작성 언어 체크
-     * @function
-     * @returns {string}
-     */
-    editLang() {
-      return this.syntax === 'html' ? 'html' : 'css';
-    },
-  },
-  // 10/30 diff 코드하이라이트 기능 제거
-  // directives: {
-  //   highlight (el) {
-  //     let blocks = el.querySelectorAll('code')
-  //     blocks.forEach((block) => {
-  //       hljs.highlightBlock(block)
-  //     })
-  //   }
-  // },
-  methods: {
-    /**
-     * 린트 실행 event
-     * @public
-     */
-    lint() {
-      this.isLoading = true;
-      this.isCopy = false;
-      this.result.warnings = [];
-      if (this.syntax === 'scss') {
-        this.config.rules = Object.assign(
-          defaultConfig.rules,
-          scssRecommendedConfig.rules,
-        );
-      }
-      const lintConfig = {
-        code: this.code,
-        config: this.config || defaultConfig,
-        syntax: this.syntax,
-      };
-      axios
-        .post(`/api/lint`, lintConfig, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          this.beforeCode = Object.freeze(this.code);
-          this.result.warnings = Object.freeze(response.data.warnings);
-          this.result.diff = Object.freeze(response.data.diff);
-          this.isFirst = false;
-          this.$nextTick(() => {
-            this.goto('#result');
-            this.isLoading = false;
-            this.afterCode = Object.freeze(response.data.output);
-          });
-        })
-        .catch((err) => {
-          this.isLoading = false;
-          alert(err);
-          console.log(err);
-        });
-    },
-    /**
-     * 초기화 event
-     * @public
-     */
-    clear() {
-      this.code = '';
-      this.isFirst = true;
-      this.isCopy = false;
-      this.result.warnings = [];
-      this.beforeCode = '';
-      this.afterCode = '';
-      this.syntax = 'css';
-      this.opt.syntax = 'CSS';
-      this.$nextTick(() => {
-        this.goto('#MongmungBody');
+async function lint() {
+  try {
+    if (window.codeEditor) {
+      inputCode.value = window.codeEditor.getValue();
+    }
+    if (inputCode.value === '') {
+      $toast.error('코드를 입력해주세요.', {
+        position: 'top',
+        duration: 3000,
       });
-    },
-    /**
-     * 샘플 입력 event
-     * @public
-     */
-    sample() {
-      this.isCopy = false;
-      this.syntax = 'html';
-      this.opt.syntax = 'HTML+CSS';
-      this.code = sampleCode;
-    },
-    /**
-     * 디자인선택상자 토글 event
-     * @arg {string} target
-     * @public
-     */
-    optToggle(target) {
-      this.$refs[target].classList.toggle('on');
-    },
-    /**
-     * 디자인선택상자 값 선택 event
-     * @param {string} target
-     * @param {string} model v-model
-     * @param {string} value
-     * @param {string} name
-     * @public
-     */
-    selectOpt(target, model, value, name) {
-      this[model] = value;
-      this.opt[model] = name;
-      this.$refs[target].classList.remove('on');
-    },
-    /**
-     * goto
-     * @param {string} target \#id
-     * @public
-     */
-    goto(target) {
-      navScroller(target);
-    },
-  },
-};
+      return;
+    }
+    status.isLoading = true;
+    result.warnings = [];
+
+    const body = {
+      code: inputCode.value,
+      config: config,
+    };
+    const response = await axios.post(`/api/lint`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    //     console.log(response, 'response');
+    if (!response.data.content) {
+      status.isLoading = false;
+      return;
+    }
+    // 응답값 치환
+    const { warnings = [], info = {}, output = '' } = response.data?.content;
+    result.warnings = Object.freeze(warnings);
+    result.version = info?.version;
+    result.config = info?.config;
+    status.isLoaded = true;
+
+    // 기존 코드
+    const beforeCode = Object.freeze(inputCode.value);
+    // 변경된 코드
+    const afterCode = Object.freeze(output);
+    document.getElementById('editor').innerHTML = '';
+
+    // 에디터 초기화
+    loader.init().then((monacoInstance) => {
+      window.diffEditor = monacoInstance.editor.createDiffEditor(
+        document.getElementById('editor'),
+        {
+          // You can optionally disable the resizing
+          enableSplitViewResizing: true,
+          originalEditable: false,
+          automaticLayout: true,
+          renderSideBySide: true,
+          theme: 'vs-light',
+        },
+      );
+
+      const originalModel = monacoInstance.editor.createModel(
+        beforeCode,
+        'html',
+      );
+      const modifiedModel = monacoInstance.editor.createModel(
+        afterCode,
+        'html',
+      );
+
+      window.diffEditor.setModel({
+        original: originalModel,
+        modified: modifiedModel,
+      });
+    });
+
+    await nextTick();
+    goto('#result');
+    status.isLoading = false;
+  } catch (err) {
+    status.isLoading = false;
+    alert(err);
+    console.log(err);
+  }
+}
+/**
+ * 초기화 event
+ * @public
+ */
+async function clear() {
+  inputCode.value = '';
+  result.warnings = [];
+  if (window.codeEditor) {
+    window.codeEditor.setValue('');
+  }
+  status.isLoaded = false;
+  await nextTick();
+  goto('#MongmungBody');
+}
+/**
+ * 샘플 입력 event
+ * @public
+ */
+function sample() {
+  inputCode.value = sampleCode;
+  result.warnings = [];
+  if (window.codeEditor) {
+    window.codeEditor.setValue(sampleCode);
+  }
+}
+
+/**
+ * goto
+ * @param {string} target \#id
+ * @public
+ */
+function goto(target) {
+  navScroller(target);
+}
+
+onMounted(() => {
+  nextTick(() => {
+    // 입력창 에디터 초기화
+    loader.init().then((monacoInstance) => {
+      window.codeEditor = monacoInstance.editor.create(
+        document.getElementById('inpTextarea'),
+        {
+          value: '',
+          language: 'html',
+          // noSemanticValidation: false,
+          // noSyntaxValidation: false,
+          minimap: {
+            enabled: false,
+          },
+          suggest: {
+            showFields: false,
+            showFunctions: false,
+          },
+          formatOnPaste: true,
+          automaticLayout: true,
+        },
+      );
+    });
+  });
+});
 </script>
-<style></style>

@@ -1,17 +1,16 @@
-<template lang="pug">
-  div.wrap_cont
-    h1.title 404
-    p 왜 오류가 났을까요??
-    p.wrap_btn
-      a(href="/") Back
+<template>
+  <div class="wrap_cont" style="height: calc(100% - 111px)">
+    <h1 class="title">404</h1>
+    <p>왜 오류가 났을까요??</p>
+    <p class="wrap_btn"><a href="/">Back</a></p>
+  </div>
+  <app-footer />
 </template>
-<script>
+<script setup>
 /**
  * NotFound 화면
  */
-export default {
-  name: 'NotFound',
-};
+import AppFooter from '../components/AppFooter.vue';
 </script>
 <style scoped>
 .wrap_cont {

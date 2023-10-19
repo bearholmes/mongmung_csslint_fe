@@ -1,37 +1,47 @@
-<template lang="pug">
-  li.item_result(:id="`${item.line}${item.column}${item.text}`" :class="item.severity")
-    span.txt_location {{item.line}}:{{item.column}}
-    span.emph_severity {{item.severity}}
-    span.txt_message
-      | {{item.text.replace(`(${item.rule})`, '')}}
-      span.txt_rule (
-        a.link_rule(:href="`//stylelint.io/user-guide/rules/${item.rule}/`" target="_blank") {{item.rule}}
-        | )
+<template>
+  <li
+    class="item_result"
+    :id="`${item.line}${item.column}${item.text}`"
+    :class="item.severity"
+  >
+    <span class="txt_location">{{ item.line }}:{{ item.column }}</span
+    ><span class="emph_severity">{{ item.severity }}</span
+    ><span class="txt_message"
+      >{{ item.text.replace(`(${item.rule})`, '')
+      }}<span class="txt_rule"
+        >(<a
+          class="link_rule"
+          :href="`//stylelint.io/user-guide/rules/${item.rule}/`"
+          target="_blank"
+          >{{ item.rule }}</a
+        >)</span
+      ></span
+    >
+  </li>
 </template>
-<script>
+<script setup>
 /**
  * WarningList 행 컴포넌트 (functional)
  */
-export default {
-  name: 'WarningListItem',
-  props: {
-    item: {
-      type: Object,
-      default: () => ({}),
-    },
+
+defineProps({
+  item: {
+    type: Object,
+    default: () => ({}),
   },
-};
+});
 </script>
 <style lang="scss" scoped>
 .item_result {
   align-items: baseline;
   display: flex;
+  line-height: 20px;
 }
 .txt_location {
   min-width: 60px;
   margin: 0 8px 0 8px;
   font-size: 12px;
-  color: darkgray;
+  color: #888;
   flex: none;
 }
 .emph_severity {
@@ -59,7 +69,7 @@ export default {
   color: darkgray;
 }
 .link_rule {
-  color: darkgray;
+  color: #888;
   text-decoration: underline;
   &:hover {
     text-decoration: none;
