@@ -378,6 +378,7 @@ async function lintHandle() {
       return;
     }
     status.isLoading = true;
+    status.isCssSyntaxError = false;
     result.warnings = [];
 
     const body = {
