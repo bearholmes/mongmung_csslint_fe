@@ -39,7 +39,7 @@
                 :disabled="status.isLoading"
                 class="btn_type1"
                 type="button"
-                @click="lint()"
+                @click="lintHandle"
               >
                 Lint
               </button>
@@ -47,7 +47,7 @@
                 :disabled="status.isLoading"
                 class="btn_type2"
                 type="button"
-                @click="clear()"
+                @click="clear"
               >
                 Clear
               </button>
@@ -55,7 +55,7 @@
                 :disabled="status.isLoading"
                 class="btn_type2"
                 type="button"
-                @click="sample()"
+                @click="sample"
               >
                 Sample
               </button>
@@ -153,10 +153,6 @@ import * as monaco from 'monaco-editor';
 
 loader.config({ monaco });
 
-// loader.config({
-//   paths: { vs: 'https://unpkg.com/monaco-editor@0.44.0/min/vs' },
-// });
-
 const $toast = useToast();
 
 const navScroller = scroller();
@@ -198,8 +194,18 @@ const status = reactive({
 // 입력값
 const inputCode = ref('');
 
+// 설정
+//https://www.npmjs.com/package/stylelint-stylistic
 const config = reactive({
   rules: {
+    'stylistic/at-rule-name-case': 'lower',
+    'stylistic/color-hex-case': 'lower',
+    'stylistic/property-case': 'lower',
+    'stylistic/no-extra-semicolons': true,
+    'stylistic/selector-pseudo-class-case': 'lower',
+    'stylistic/selector-pseudo-element-case': 'lower',
+    'stylistic/string-quotes': 'single',
+    'stylistic/unit-case': 'lower',
     'color-named': 'never',
     'declaration-block-single-line-max-declarations': 99,
     'declaration-no-important': true,
@@ -349,7 +355,7 @@ const hasDiff = computed(() => {
  * 린트 실행 event
  * @public
  */
-async function lint() {
+async function lintHandle() {
   try {
     if (window.codeEditor) {
       inputCode.value = window.codeEditor.getValue();
@@ -375,7 +381,7 @@ async function lint() {
       },
     });
 
-    console.log(response, 'response');
+    // console.log(response, 'response');
     if (!response.data.content) {
       status.isLoading = false;
       return;
@@ -399,8 +405,14 @@ async function lint() {
     status.isLoading = false;
   } catch (err) {
     status.isLoading = false;
-    alert(err);
-    console.log(err);
+    $toast.error(
+      err?.response?.data?.message || err?.message || '네트워크 오류',
+      {
+        position: 'top',
+        duration: 3000,
+      },
+    );
+    console.error(err);
   }
 }
 /**
