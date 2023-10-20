@@ -66,18 +66,26 @@
             <div v-show="status.isLoading" class="ico_loader"></div>
             <div v-show="status.isLoaded" id="result" class="section_result">
               <h3 class="tit_paragraph">Result</h3>
-              <h4 class="screen_out">문법 오류</h4>
-              <warning-list
-                :list.sync="result.warnings"
-                :diff="hasDiff"
-              ></warning-list>
-              <h4 class="screen_out">위치</h4>
-              <div id="diff" class="box_diff">
-                <div
-                  id="editor"
-                  v-show="!!inputCode"
-                  style="height: 100%"
-                ></div>
+              <template v-if="!status.isCssSyntaxError">
+                <h4 class="screen_out">문법 오류</h4>
+                <warning-list
+                  :list.sync="result.warnings"
+                  :diff="hasDiff"
+                ></warning-list>
+                <h4 class="screen_out">위치</h4>
+                <div id="diff" class="box_diff">
+                  <div
+                    id="editor"
+                    v-show="!!inputCode"
+                    style="height: 100%"
+                  ></div>
+                </div>
+              </template>
+              <div class="box_error" v-else>
+                <strong class="emph_color">CSS Syntax Error 😢</strong>
+                <span class="txt_message">
+                  입력 값을 확인 후, 다시 시도해주세요.
+                </span>
               </div>
               <div class="wrap_btn">
                 <button
@@ -120,6 +128,7 @@
                 Result
               </button>
               <button
+                v-show="!status.isCssSyntaxError"
                 class="btn_type2"
                 type="button"
                 @click="gotoScroll('#diff')"
@@ -189,6 +198,7 @@ const status = reactive({
   isLoaded: false,
   isLoading: false,
   isShowRules: false,
+  isCssSyntaxError: false,
 });
 
 // 입력값
@@ -393,12 +403,16 @@ async function lintHandle() {
     result.config = info?.config;
     status.isLoaded = true;
 
-    // 기존 코드
-    const beforeCode = Object.freeze(inputCode.value);
-    // 변경된 코드
-    const afterCode = Object.freeze(output);
-    // diff 에디터 초기화
-    initDiffEditor(syntax.value, beforeCode, afterCode);
+    if (output.includes('SyntaxError')) {
+      status.isCssSyntaxError = true;
+    } else {
+      // 기존 코드
+      const beforeCode = Object.freeze(inputCode.value);
+      // 변경된 코드
+      const afterCode = Object.freeze(output);
+      // diff 에디터 초기화
+      initDiffEditor(syntax.value, beforeCode, afterCode);
+    }
 
     await nextTick();
     gotoScroll('#result');
@@ -420,6 +434,7 @@ async function lintHandle() {
  * @public
  */
 async function clear() {
+  status.isCssSyntaxError = false;
   inputCode.value = '';
   result.warnings = [];
   syntax.value = 'css';
@@ -433,6 +448,7 @@ async function clear() {
  * @public
  */
 function sample() {
+  status.isCssSyntaxError = false;
   inputCode.value = sampleCode;
   result.warnings = [];
   syntax.value = 'html';
