@@ -1,4 +1,4 @@
-@import url('./Top.css');
+@import url('top.css');
 
 /* KoddiUD 온고딕 */
 @font-face {
@@ -60,20 +60,3 @@ body,
   background-color: #ffef3f;
 }
 
-.d2h-file-wrapper {
-  padding-bottom: 2px;
-}
-.d2h-file-header {
-  height: 18px;
-}
-.d2h-changed-tag {
-  padding: 0 5px;
-}
-.d2h-diff-table {
-  font-size: 11px;
-}
-
-.d2h-file-list-header,
-.d2h-file-name-wrapper {
-  display: none;
-}
