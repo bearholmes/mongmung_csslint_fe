@@ -10,11 +10,36 @@
             <h2 id="MongmungBody" class="screen_out">본문</h2>
             <h3 class="screen_out">입력</h3>
             <div class="wrap_menu">
+              <div class="opt_custom" ref="refSyntaxOpt">
+                <strong class="screen_out">언어 선택상자</strong>
+                <em class="screen_out">선택내용</em>
+                <a
+                  class="link_selected"
+                  href="javascript:;"
+                  role="button"
+                  @click="optToggle"
+                >
+                  {{ selectedSyntax }}
+                </a>
+                <div class="layer_opt">
+                  <ul class="list_opt">
+                    <li v-for="(item, idx) in options.syntax" :key="idx">
+                      <a
+                        class="link_opt"
+                        href="javascript:;"
+                        role="button"
+                        @click="selectSyntaxOpt(item.value, item.type)"
+                        >{{ item.label }}</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
               <button
                 :disabled="status.isLoading"
                 class="btn_type1"
                 type="button"
-                @click="lint()"
+                @click="lintHandle"
               >
                 Lint
               </button>
@@ -22,7 +47,7 @@
                 :disabled="status.isLoading"
                 class="btn_type2"
                 type="button"
-                @click="clear()"
+                @click="clear"
               >
                 Clear
               </button>
@@ -30,7 +55,7 @@
                 :disabled="status.isLoading"
                 class="btn_type2"
                 type="button"
-                @click="sample()"
+                @click="sample"
               >
                 Sample
               </button>
@@ -67,16 +92,7 @@
                 </button>
               </div>
               <h4 class="screen_out">규칙</h4>
-              <div
-                v-show="status.isShowRules"
-                style="
-                  margin-top: 10px;
-                  height: 300px;
-                  overflow-y: auto;
-                  border: 1px solid #e7e7e7;
-                  font-size: 11px;
-                "
-              >
+              <div v-show="status.isShowRules" class="box_rules">
                 <pre>{{
                   {
                     version: result.version,
@@ -92,14 +108,22 @@
               <button
                 class="btn_type2"
                 type="button"
-                @click="goto('#MongmungBody')"
+                @click="gotoScroll('#MongmungBody')"
               >
                 TOP
               </button>
-              <button class="btn_type2" type="button" @click="goto('#result')">
+              <button
+                class="btn_type2"
+                type="button"
+                @click="gotoScroll('#result')"
+              >
                 Result
               </button>
-              <button class="btn_type2" type="button" @click="goto('#diff')">
+              <button
+                class="btn_type2"
+                type="button"
+                @click="gotoScroll('#diff')"
+              >
                 Diff
               </button>
             </div>
@@ -128,10 +152,6 @@ import loader from '@monaco-editor/loader';
 import * as monaco from 'monaco-editor';
 
 loader.config({ monaco });
-
-// loader.config({
-//   paths: { vs: 'https://unpkg.com/monaco-editor@0.44.0/min/vs' },
-// });
 
 const $toast = useToast();
 
@@ -174,8 +194,18 @@ const status = reactive({
 // 입력값
 const inputCode = ref('');
 
+// 설정
+//https://www.npmjs.com/package/stylelint-stylistic
 const config = reactive({
   rules: {
+    'stylistic/at-rule-name-case': 'lower',
+    'stylistic/color-hex-case': 'lower',
+    'stylistic/property-case': 'lower',
+    'stylistic/no-extra-semicolons': true,
+    'stylistic/selector-pseudo-class-case': 'lower',
+    'stylistic/selector-pseudo-element-case': 'lower',
+    'stylistic/string-quotes': 'single',
+    'stylistic/unit-case': 'lower',
     'color-named': 'never',
     'declaration-block-single-line-max-declarations': 99,
     'declaration-no-important': true,
@@ -260,12 +290,61 @@ const config = reactive({
     'selector-id-pattern': false,
   },
 });
+
 // api 응답 결과
 const result = reactive({
   warnings: [],
   version: '',
   config: {},
 });
+
+// syntax 선택
+const syntax = ref('css');
+// syntax 선택상자 ref
+const refSyntaxOpt = ref(null);
+// 선택상자 options
+const options = reactive({
+  syntax: [
+    {
+      label: 'CSS',
+      value: 'css',
+      type: 'css',
+    },
+    {
+      label: 'HTML+CSS',
+      value: 'html',
+      type: 'html',
+    },
+  ],
+});
+
+// 선택된 syntax label
+const selectedSyntax = computed(() => {
+  const item = options.syntax.find((item) => item.value === syntax.value);
+  return item ? item.label : '';
+});
+
+/**
+ * 디자인선택상자 토글 event
+ * @public
+ */
+function optToggle() {
+  refSyntaxOpt.value.classList.toggle('on');
+}
+/**
+ * 디자인선택상자 값 선택 event
+ * @param {string} value
+ * @param type
+ * @public
+ */
+function selectSyntaxOpt(value, type) {
+  syntax.value = value;
+  if (window.codeEditor) {
+    inputCode.value = window.codeEditor.getValue();
+  }
+  initEditor(type, inputCode.value);
+  refSyntaxOpt.value.classList.remove('on');
+}
 
 // diff 여부
 const hasDiff = computed(() => {
@@ -276,7 +355,7 @@ const hasDiff = computed(() => {
  * 린트 실행 event
  * @public
  */
-async function lint() {
+async function lintHandle() {
   try {
     if (window.codeEditor) {
       inputCode.value = window.codeEditor.getValue();
@@ -294,6 +373,7 @@ async function lint() {
     const body = {
       code: inputCode.value,
       config: config,
+      syntax: syntax.value,
     };
     const response = await axios.post(`/api/lint`, body, {
       headers: {
@@ -301,7 +381,7 @@ async function lint() {
       },
     });
 
-    //     console.log(response, 'response');
+    // console.log(response, 'response');
     if (!response.data.content) {
       status.isLoading = false;
       return;
@@ -317,44 +397,22 @@ async function lint() {
     const beforeCode = Object.freeze(inputCode.value);
     // 변경된 코드
     const afterCode = Object.freeze(output);
-    document.getElementById('editor').innerHTML = '';
-
-    // 에디터 초기화
-    loader.init().then((monacoInstance) => {
-      window.diffEditor = monacoInstance.editor.createDiffEditor(
-        document.getElementById('editor'),
-        {
-          // You can optionally disable the resizing
-          enableSplitViewResizing: true,
-          originalEditable: false,
-          automaticLayout: true,
-          renderSideBySide: true,
-          theme: 'vs-light',
-        },
-      );
-
-      const originalModel = monacoInstance.editor.createModel(
-        beforeCode,
-        'html',
-      );
-      const modifiedModel = monacoInstance.editor.createModel(
-        afterCode,
-        'html',
-      );
-
-      window.diffEditor.setModel({
-        original: originalModel,
-        modified: modifiedModel,
-      });
-    });
+    // diff 에디터 초기화
+    initDiffEditor(syntax.value, beforeCode, afterCode);
 
     await nextTick();
-    goto('#result');
+    gotoScroll('#result');
     status.isLoading = false;
   } catch (err) {
     status.isLoading = false;
-    alert(err);
-    console.log(err);
+    $toast.error(
+      err?.response?.data?.message || err?.message || '네트워크 오류',
+      {
+        position: 'top',
+        duration: 3000,
+      },
+    );
+    console.error(err);
   }
 }
 /**
@@ -364,12 +422,11 @@ async function lint() {
 async function clear() {
   inputCode.value = '';
   result.warnings = [];
-  if (window.codeEditor) {
-    window.codeEditor.setValue('');
-  }
+  syntax.value = 'css';
+  initEditor('css', inputCode.value);
   status.isLoaded = false;
   await nextTick();
-  goto('#MongmungBody');
+  gotoScroll('#MongmungBody');
 }
 /**
  * 샘플 입력 event
@@ -378,43 +435,92 @@ async function clear() {
 function sample() {
   inputCode.value = sampleCode;
   result.warnings = [];
-  if (window.codeEditor) {
-    window.codeEditor.setValue(sampleCode);
-  }
+  syntax.value = 'html';
+  initEditor('html', inputCode.value);
+  status.isLoaded = false;
 }
 
 /**
- * goto
+ * 특정 위치로 스크롤 이동
  * @param {string} target \#id
  * @public
  */
-function goto(target) {
+function gotoScroll(target) {
   navScroller(target);
+}
+
+/**
+ * 에디터 초기화
+ * @public
+ * @param syntax
+ * @param code
+ */
+function initEditor(syntax, code) {
+  if (window.codeEditor) {
+    window.codeEditor.dispose();
+    document.getElementById('inpTextarea').innerHTML = '';
+  }
+  // 입력창 에디터 초기화
+  loader.init().then((monacoInstance) => {
+    window.codeEditor = monacoInstance.editor.create(
+      document.getElementById('inpTextarea'),
+      {
+        value: code || '',
+        language: syntax,
+        // noSemanticValidation: false,
+        // noSyntaxValidation: false,
+        minimap: {
+          enabled: false,
+        },
+        suggest: {
+          showFields: false,
+          showFunctions: false,
+        },
+        formatOnPaste: true,
+        automaticLayout: true,
+      },
+    );
+  });
+}
+
+/**
+ * diff 에디터 초기화
+ * @public
+ * @param syntax
+ * @param beforeCode
+ * @param afterCode
+ */
+function initDiffEditor(syntax, beforeCode, afterCode) {
+  if (window.diffEditor) window.diffEditor.dispose();
+  document.getElementById('editor').innerHTML = '';
+
+  // 에디터 초기화
+  loader.init().then((monacoInstance) => {
+    window.diffEditor = monacoInstance.editor.createDiffEditor(
+      document.getElementById('editor'),
+      {
+        // You can optionally disable the resizing
+        enableSplitViewResizing: true,
+        originalEditable: false,
+        automaticLayout: true,
+        renderSideBySide: true,
+        theme: 'vs-light',
+      },
+    );
+
+    const originalModel = monacoInstance.editor.createModel(beforeCode, syntax);
+    const modifiedModel = monacoInstance.editor.createModel(afterCode, syntax);
+
+    window.diffEditor.setModel({
+      original: originalModel,
+      modified: modifiedModel,
+    });
+  });
 }
 
 onMounted(() => {
   nextTick(() => {
-    // 입력창 에디터 초기화
-    loader.init().then((monacoInstance) => {
-      window.codeEditor = monacoInstance.editor.create(
-        document.getElementById('inpTextarea'),
-        {
-          value: '',
-          language: 'html',
-          // noSemanticValidation: false,
-          // noSyntaxValidation: false,
-          minimap: {
-            enabled: false,
-          },
-          suggest: {
-            showFields: false,
-            showFunctions: false,
-          },
-          formatOnPaste: true,
-          automaticLayout: true,
-        },
-      );
-    });
+    initEditor('css', '');
   });
 });
 </script>
