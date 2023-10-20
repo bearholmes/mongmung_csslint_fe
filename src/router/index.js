@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Top from '../views/Top.vue';
+import Top from '../views/TopView.vue';
 import NotFound from '../views/NotFound.vue';
 
 const routes = [
   {
     path: '/',
-    name: 'top',
+    name: 'Top',
     component: Top,
   },
   {
