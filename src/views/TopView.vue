@@ -61,7 +61,7 @@
               </button>
             </div>
             <div class="tf_custom">
-              <div id="inpTextarea" style="height: 100%"></div>
+              <div id="inpTextarea" style="height: 150px"></div>
             </div>
             <div v-show="status.isLoading" class="ico_loader"></div>
             <div v-show="status.isLoaded" id="result" class="section_result">
@@ -77,7 +77,7 @@
                   <div
                     id="editor"
                     v-show="!!inputCode"
-                    style="height: 100%"
+                    style="height: 400px"
                   ></div>
                 </div>
               </template>
@@ -208,18 +208,11 @@ const inputCode = ref('');
 //https://www.npmjs.com/package/stylelint-stylistic
 const config = reactive({
   rules: {
-    'stylistic/at-rule-name-case': 'lower',
-    'stylistic/color-hex-case': 'lower',
-    'stylistic/property-case': 'lower',
-    'stylistic/no-extra-semicolons': true,
-    'stylistic/selector-pseudo-class-case': 'lower',
-    'stylistic/selector-pseudo-element-case': 'lower',
-    'stylistic/string-quotes': 'single',
-    'stylistic/unit-case': 'lower',
     'color-named': 'never',
     'declaration-block-single-line-max-declarations': 99,
     'declaration-no-important': true,
     'declaration-property-value-no-unknown': true,
+    'no-descending-specificity': false,
     'order/properties-order': [
       'display',
       'overflow',
@@ -298,6 +291,36 @@ const config = reactive({
     ],
     'selector-class-pattern': false,
     'selector-id-pattern': false,
+    'stylistic/at-rule-name-case': 'lower',
+    'stylistic/at-rule-semicolon-newline-after': 'always',
+    'stylistic/block-closing-brace-newline-after': 'always',
+    'stylistic/block-opening-brace-space-after': 'never-single-line',
+    'stylistic/block-opening-brace-space-before': 'never-single-line',
+    'stylistic/color-hex-case': 'lower',
+    'stylistic/declaration-block-semicolon-space-after': 'never',
+    'stylistic/declaration-block-semicolon-space-before': 'never',
+    'stylistic/declaration-block-trailing-semicolon': 'never',
+    'stylistic/declaration-colon-space-after': 'never',
+    'stylistic/declaration-colon-space-before': 'never',
+    'stylistic/function-comma-space-after': 'never',
+    'stylistic/function-comma-space-before': 'never',
+    'stylistic/function-parentheses-space-inside': 'never',
+    'stylistic/no-extra-semicolons': true,
+    'stylistic/property-case': 'lower',
+    'stylistic/selector-attribute-brackets-space-inside': 'never',
+    'stylistic/selector-attribute-operator-space-after': 'never',
+    'stylistic/selector-attribute-operator-space-before': 'never',
+    'stylistic/selector-combinator-space-after': 'never',
+    'stylistic/selector-combinator-space-before': 'never',
+    'stylistic/selector-list-comma-space-after': 'never',
+    'stylistic/selector-list-comma-space-before': 'never',
+    'stylistic/selector-pseudo-class-case': 'lower',
+    'stylistic/selector-pseudo-class-parentheses-space-inside': 'never',
+    'stylistic/selector-pseudo-element-case': 'lower',
+    'stylistic/string-quotes': 'single',
+    'stylistic/unit-case': 'lower',
+    'stylistic/value-list-comma-space-after': 'always',
+    'stylistic/value-list-comma-space-before': 'never',
   },
 });
 
@@ -495,6 +518,8 @@ function initEditor(syntax, code) {
         },
         formatOnPaste: true,
         automaticLayout: true,
+        scrollBeyondLastLine: false,
+        scrollBeyondLastColumn: false,
       },
     );
   });
@@ -522,6 +547,8 @@ function initDiffEditor(syntax, beforeCode, afterCode) {
         automaticLayout: true,
         renderSideBySide: true,
         theme: 'vs-light',
+        scrollBeyondLastLine: false,
+        scrollBeyondLastColumn: false,
       },
     );
 
