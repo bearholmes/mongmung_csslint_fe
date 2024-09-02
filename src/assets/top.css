@@ -480,3 +480,38 @@ var {
 .link_copy {
   color: #555;
 }
+
+/* 기본 라디오 버튼을 숨김 */
+input[type='radio'] {
+  display:none
+}
+
+/* 라디오 버튼과 텍스트를 함께 포함하는 라벨 스타일 */
+label {
+  display:inline-flex;align-items:center;cursor:pointer;vertical-align:top
+}
+
+label+label{
+  margin-left:12px
+}
+
+/* 커스텀 라디오 버튼 스타일 */
+label .custom-radio {
+  position:relative;width:14px;height:14px;margin-right:4px;/* 라벨 텍스트와 라디오 버튼 간의 간격 */
+  border:2px solid #ccc;border-radius:50%
+}
+
+/* 선택된 상태의 커스텀 라디오 버튼 스타일 */
+input[type='radio']:checked+.custom-radio {
+  border-color:#ffdd57;background-color:#ffdd57;/* 원하는 색상 코드 */
+}
+
+/* 라디오 버튼의 내부 점 */
+.custom-radio::after {
+  display:block;position:absolute;top:50%;left:50%;width:7px;height:7px;border-radius:50%;background-color:#fff;content:'';transform:translate(-50%,-50%);opacity:0;transition:opacity 0.2s
+}
+
+/* 선택된 상태에서의 점 표시 */
+input[type='radio']:checked+.custom-radio::after {
+  opacity:1
+}
