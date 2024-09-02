@@ -59,6 +59,46 @@
               >
                 Sample
               </button>
+              <div v-if="syntax === 'css'" style="margin: 9px 0 0 7px">
+                <span style="margin-right: 14px"
+                  >Output Style
+                  <span
+                    style="color: #999; vertical-align: super; font-size: 10px"
+                    >beta</span
+                  ></span
+                >
+                <label>
+                  <input
+                    type="radio"
+                    v-model="config.outputStyle"
+                    :disabled="status.isLoading"
+                    value="nested"
+                  />
+                  <span class="custom-radio"></span>
+                  nested
+                </label>
+
+                <label>
+                  <input
+                    type="radio"
+                    v-model="config.outputStyle"
+                    :disabled="status.isLoading"
+                    value="compact"
+                  />
+                  <span class="custom-radio"></span>
+                  compact
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    v-model="config.outputStyle"
+                    :disabled="status.isLoading"
+                    value=""
+                  />
+                  <span class="custom-radio"></span>
+                  none
+                </label>
+              </div>
             </div>
             <div class="tf_custom">
               <div id="inpTextarea" style="height: 150px"></div>
@@ -207,6 +247,7 @@ const inputCode = ref('');
 // 설정
 //https://www.npmjs.com/package/stylelint-stylistic
 const config = reactive({
+  outputStyle: '', // compact, nested
   rules: {
     'color-named': 'never',
     'declaration-block-single-line-max-declarations': 99,
