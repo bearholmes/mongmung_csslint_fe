@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "export NODE_OPTIONS=--max-old-space-size=800&&vite build",
+    "build": "export NODE_OPTIONS=--max-old-space-size=850&&vite build",
     "preview": "vite preview",
     "format": "prettier . --write"
   },
