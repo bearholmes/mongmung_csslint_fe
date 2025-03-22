@@ -10,7 +10,7 @@ COPY . .
 
 # 메모리 제한 설정을 명시적으로 추가
 ENV NODE_OPTIONS="--max-old-space-size=512"
-RUN npm run build
+#RUN npm run build
 
 FROM nginx:stable-alpine AS production
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf

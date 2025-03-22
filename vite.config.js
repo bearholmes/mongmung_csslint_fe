@@ -3,7 +3,9 @@ import vue from '@vitejs/plugin-vue';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+  ],
   server: {
     port: 5001,
     proxy: {
@@ -15,24 +17,18 @@ export default defineConfig({
     },
   },
   build: {
-    sourcemap: false,
-    // 청크 크기 제한 및 분할 최적화
-    chunkSizeWarningLimit: 800,
+    emptyOutDir: true,
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 500,
+    assetsInlineLimit: 1024, // 작은 에셋만 인라인화
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor': ['vue', 'vue-router'],
-          'monaco': ['monaco-editor', '@monaco-editor/loader'],
-          'ui': ['vue-toast-notification', 'vue-scrollto']
+        manualChunks(id) {
+          // 더 작은 청크로 분할
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
         }
-      }
-    },
-    // 빌드 최적화 옵션
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
       }
     }
   }
