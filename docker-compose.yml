@@ -6,3 +6,9 @@ services:
     container_name: stylelint-fe
     ports:
       - '5001:8080'
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
