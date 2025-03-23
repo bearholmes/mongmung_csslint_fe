@@ -17,10 +17,11 @@ import WarningListItem from './WarningListItem.vue';
  */
 defineProps({
   /**
-   * 목록
+   * 경고 목록
    */
   list: {
     type: Array,
+    default: () => [],
   },
   /**
    * diff 포함 여부
